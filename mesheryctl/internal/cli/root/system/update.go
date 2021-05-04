@@ -51,9 +51,9 @@ var updateCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		if currCtx.Version != "latest" {
+		if currCtx.Version["meshery"] != "latest" {
 			// ask confirmation if user has pinned the version in config
-			log.Infof("You have pinned version: %s in your current conext", currCtx.Version)
+			log.Infof("You have pinned version: %s in your current conext", currCtx.Version["meshery"])
 			userResponse := false
 			if utils.SilentFlag {
 				userResponse = true
@@ -65,7 +65,7 @@ var updateCmd = &cobra.Command{
 				log.Info("Update aborted.")
 				return nil
 			}
-			currCtx.Version = "latest"
+			currCtx.Version["meshery"] = "latest"
 		}
 
 		switch currCtx.Platform {
@@ -91,7 +91,7 @@ var updateCmd = &cobra.Command{
 				return errors.Wrap(err, "failed to create new client")
 			}
 
-			version := currCtx.Version
+			version := currCtx.Version["meshery"]
 			RequestedAdapters := currCtx.Adapters
 
 			if version == "latest" {

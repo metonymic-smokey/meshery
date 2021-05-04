@@ -159,7 +159,7 @@ func stop() error {
 			return err
 		}
 
-		version := currCtx.Version
+		version := currCtx.Version["meshery"]
 		if version == "latest" {
 			if currCtx.Channel == "edge" {
 				version = "master"

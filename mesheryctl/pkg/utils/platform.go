@@ -206,13 +206,13 @@ func DownloadDockerComposeFile(ctx config.Context, force bool) error {
 		if ctx.Channel == "edge" {
 			fileURL = "https://raw.githubusercontent.com/layer5io/meshery/master/docker-compose.yaml"
 		} else if ctx.Channel == "stable" {
-			if ctx.Version == "latest" {
-				ctx.Version, err = GetLatestStableReleaseTag()
+			if ctx.Version["meshery"] == "latest" {
+				ctx.Version["meshery"], err = GetLatestStableReleaseTag()
 				if err != nil {
 					return errors.Wrapf(err, fmt.Sprintf("failed to fetch latest stable release tag"))
 				}
 			}
-			fileURL = "https://raw.githubusercontent.com/layer5io/meshery/" + ctx.Version + "/docker-compose.yaml"
+			fileURL = "https://raw.githubusercontent.com/layer5io/meshery/" + ctx.Version["meshery"] + "/docker-compose.yaml"
 		} else {
 			return errors.Errorf("unknown channel %s", ctx.Channel)
 		}

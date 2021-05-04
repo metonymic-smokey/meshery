@@ -123,7 +123,7 @@ var setCmd = &cobra.Command{
 			return errors.New("error while trying to fetch context content")
 		}
 
-		ContextContent.Version = version
+		ContextContent.Version["meshery"] = version
 		ContextContent.Channel = channelNameSeperated[0]
 
 		mctlCfg.Contexts[focusedContext] = ContextContent

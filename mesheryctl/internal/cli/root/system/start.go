@@ -249,7 +249,7 @@ func start() error {
 			return errors.Wrap(err, "failed to create new client")
 		}
 
-		version := currCtx.Version
+		version := currCtx.Version["meshery"]
 		if version == "latest" {
 			if currCtx.Channel == "edge" {
 				version = "master"

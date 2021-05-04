@@ -122,7 +122,7 @@ var TemplateContext = config.Context{
 	Platform: "docker",
 	Adapters: ListOfAdapters,
 	Channel:  "stable",
-	Version:  "latest",
+	Version:  map[string]string{"meshery": "latest"},
 }
 
 // TemplateToken is the template token provided when creating a config file

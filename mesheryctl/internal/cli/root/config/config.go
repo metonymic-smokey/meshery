@@ -35,7 +35,7 @@ type Context struct {
 	Platform string   `mapstructure:"platform"`
 	Adapters []string `mapstructure:"adapters,omitempty"`
 	Channel  string   `mapstructure:"channel,omitempty"`
-	Version  string   `mapstructure:"version,omitempty"`
+	Version  map[string]string   `mapstructure:"version,omitempty"`
 }
 
 // GetMesheryCtl returns a reference to the mesheryctl configuration object.
@@ -72,25 +72,25 @@ func (mc *MesheryCtlConfig) CheckIfCurrentContextIsValid() (Context, error) {
 
 // ValidateVersion checks if the version is valid, if empty sets it to default value latest. Returns an error if the version is invalid.
 func (ctx *Context) ValidateVersion() error {
-	if ctx.Version == "" {
-		ctx.Version = "latest"
+	if ctx.Version["meshery"] == "" {
+		ctx.Version["meshery"] = "latest"
 		return nil
 	}
 
-	if ctx.Version == "latest" {
+	if ctx.Version["meshery"] == "latest" {
 		return nil
 	}
 
-	matched, err := regexp.MatchString(`v[0-9]+.[0-9]+.[0-9]+[-a-z0-9]*`, ctx.Version)
+	matched, err := regexp.MatchString(`v[0-9]+.[0-9]+.[0-9]+[-a-z0-9]*`, ctx.Version["meshery"])
 	if err != nil || !matched {
-		return errors.New("invalid version " + ctx.Version + " specified")
+		return errors.New("invalid version " + ctx.Version["meshery"] + " specified")
 	}
 
 	if matched {
 		return nil
 	}
 
-	return errors.New("invalid version " + ctx.Version + " specified")
+	return errors.New("invalid version " + ctx.Version["meshery"] + " specified")
 }
 
 // GetBaseMesheryURL returns the base meshery server URL
