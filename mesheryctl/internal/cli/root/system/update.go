@@ -92,6 +92,7 @@ var updateCmd = &cobra.Command{
 			}
 
 			version := currCtx.Version["meshery"]
+			operatorVersion := currCtx.Version["meshery-operator"]
 			RequestedAdapters := currCtx.Adapters
 
 			if version == "latest" {
@@ -106,7 +107,7 @@ var updateCmd = &cobra.Command{
 			}
 
 			// fetch the manifest files corresponding to the version specified
-			manifests, err := utils.FetchManifests(version)
+			manifests, err := utils.FetchManifests(version, operatorVersion)
 
 			if err != nil {
 				return err

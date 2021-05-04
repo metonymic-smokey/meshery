@@ -250,6 +250,7 @@ func start() error {
 		}
 
 		version := currCtx.Version["meshery"]
+		operatorVersion := currCtx.Version["meshery-operator"]
 		if version == "latest" {
 			if currCtx.Channel == "edge" {
 				version = "master"
@@ -262,7 +263,7 @@ func start() error {
 		}
 
 		// fetch the manifest files corresponding to the version specified
-		manifests, err := utils.FetchManifests(version)
+		manifests, err := utils.FetchManifests(version, operatorVersion)
 
 		if err != nil {
 			return err

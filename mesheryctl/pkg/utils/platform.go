@@ -85,8 +85,18 @@ func GetManifestURL(manifest Manifest, rawManifestsURL string) string {
 	return ""
 }
 
+func GetOperatorURLs(operatorVersion string) map[string]string {
+	urls := make(map[string]string)
+
+	urls["MesheryOperator"] = baseConfigURL + operatorVersion + OperatorURL
+	urls["MesheryBroker"] = baseConfigURL + operatorVersion + BrokerURL
+	urls["MesheryMeshsync"] = baseConfigURL + operatorVersion + MeshsyncURL
+
+	return urls
+}
+
 // DownloadManifests downloads all the Kubernetes manifest files
-func DownloadManifests(manifestArr []Manifest, rawManifestsURL string) error {
+func DownloadManifests(manifestArr []Manifest, rawManifestsURL, operatorVersion string) error {
 	for _, manifest := range manifestArr {
 		if manifestFile := GetManifestURL(manifest, rawManifestsURL); manifestFile != "" {
 			// download the manifest files to ~/.meshery/manifests folder
@@ -97,20 +107,22 @@ func DownloadManifests(manifestArr []Manifest, rawManifestsURL string) error {
 		}
 	}
 
+	operatorURLs := GetOperatorURLs(operatorVersion)
+
 	operatorFilepath := filepath.Join(MesheryFolder, ManifestsFolder, MesheryOperator)
-	err := DownloadFile(operatorFilepath, OperatorURL)
+	err := DownloadFile(operatorFilepath, operatorURLs["MesheryOperator"])
 	if err != nil {
 		return errors.Wrapf(err, SystemError(fmt.Sprintf("failed to download %s file from %s operator file", operatorFilepath, MesheryOperator)))
 	}
 
 	brokerFilepath := filepath.Join(MesheryFolder, ManifestsFolder, MesheryOperatorBroker)
-	err = DownloadFile(brokerFilepath, BrokerURL)
+	err = DownloadFile(brokerFilepath, operatorURLs["MesheryBroker"])
 	if err != nil {
 		return errors.Wrapf(err, SystemError(fmt.Sprintf("failed to download %s file from %s operator file", brokerFilepath, MesheryOperatorBroker)))
 	}
 
 	meshsyncFilepath := filepath.Join(MesheryFolder, ManifestsFolder, MesheryOperatorMeshsync)
-	err = DownloadFile(meshsyncFilepath, MeshsyncURL)
+	err = DownloadFile(meshsyncFilepath, operatorURLs["MesheryMeshsync"])
 	if err != nil {
 		return errors.Wrapf(err, SystemError(fmt.Sprintf("failed to download %s file from %s operator file", meshsyncFilepath, MesheryOperatorMeshsync)))
 	}
@@ -119,7 +131,7 @@ func DownloadManifests(manifestArr []Manifest, rawManifestsURL string) error {
 }
 
 // FetchManifests is a wrapper function that identifies the required manifest files as downloads them
-func FetchManifests(version string) ([]Manifest, error) {
+func FetchManifests(version, operatorVersion string) ([]Manifest, error) {
 	log.Debug("fetching required Kubernetes manifest files...")
 	// get correct minfestsURL based on version
 	manifestsURL, err := GetManifestTreeURL(version)
@@ -149,7 +161,7 @@ func FetchManifests(version string) ([]Manifest, error) {
 
 	// download all the manifest files to the ~/.meshery/manifests folder
 	rawManifestsURL := "https://raw.githubusercontent.com/layer5io/meshery/" + version + "/install/deployment_yamls/k8s/"
-	err = DownloadManifests(manifests, rawManifestsURL)
+	err = DownloadManifests(manifests, rawManifestsURL, operatorVersion)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to download manifests")
