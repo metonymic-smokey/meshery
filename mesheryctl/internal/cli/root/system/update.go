@@ -106,6 +106,15 @@ var updateCmd = &cobra.Command{
 				}
 			}
 
+			//will add Edge version once separate channel for Operator is made.
+			//right now, it's assumed to be stable
+			if operatorVersion == "latest" {
+				operatorVersion, err = utils.GetLatestStableOperatorReleaseTag()
+				if err != nil {
+					return err
+				}
+			}
+
 			// fetch the manifest files corresponding to the version specified
 			manifests, err := utils.FetchManifests(version, operatorVersion)
 
