@@ -170,9 +170,37 @@ func FetchManifests(version, operatorVersion string) ([]Manifest, error) {
 	return manifests, nil
 }
 
-// GetLatestStableReleaseTag fetches and returns the latest release tag from GitHub
+// GetLatestStableReleaseTag fetches and returns the latest Meshery release tag from GitHub
 func GetLatestStableReleaseTag() (string, error) {
 	url := "https://api.github.com/repos/layer5io/meshery/releases/latest"
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to make GET request to %s", url)
+	}
+	defer SafeClose(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("failed to get latest stable release tag")
+	}
+
+	var dat map[string]interface{}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to read response body")
+	}
+	if err := json.Unmarshal(body, &dat); err != nil {
+		return "", errors.Wrap(err, "failed to unmarshal json into object")
+	}
+	null := ""
+	if dat["tag_name"] != nil {
+		null = dat["tag_name"].(string)
+	}
+	return null, nil
+}
+
+// GetLatestStableOperatorReleaseTag fetches and returns the latest Meshery Operator release tag from GitHub
+func GetLatestStableOperatorReleaseTag() (string, error) {
+	url := "https://api.github.com/repos/layer5io/meshery-operator/releases/latest"
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to make GET request to %s", url)

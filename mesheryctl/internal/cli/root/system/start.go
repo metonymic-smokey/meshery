@@ -262,6 +262,15 @@ func start() error {
 			}
 		}
 
+		//will add Edge channel consideration once separate Channel for Operators is supported
+		//for now, assumed to be 'stable'
+		if operatorVersion == "latest" {
+			operatorVersion, err = utils.GetLatestStableOperatorReleaseTag()
+			if err != nil {
+				return err
+			}
+		}
+
 		// fetch the manifest files corresponding to the version specified
 		manifests, err := utils.FetchManifests(version, operatorVersion)
 
