@@ -65,7 +65,8 @@ func resetMesheryConfig() error {
 	log.Info("Meshery resetting...\n")
 	log.Printf("Current Context: %s", mctlCfg.CurrentContext)
 	log.Printf("Channel: %s", currCtx.Channel)
-	log.Printf("Version: %s", currCtx.Version)
+	log.Printf("Version - Meshery: %s", currCtx.Version["meshery"])
+	log.Printf("Version - Meshery Operator: %s", currCtx.Version["meshery-operator"])
 	log.Printf("Platform: %s\n", currCtx.Platform)
 
 	switch currCtx.Platform {
